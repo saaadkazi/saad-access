@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Click to open fullscreen modal
       frame.addEventListener('click', () => {
         if (reelModal && reelModalVideo) {
-          reelModalVideo.src = videoSrc;
+          reelModalVideo.src = video.src || videoSrc;
           reelModalVideo.muted = false; // Enable sound in modal
 
           if (reelModalTitle) reelModalTitle.innerText = title;
