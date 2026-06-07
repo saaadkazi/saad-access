@@ -235,8 +235,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Mouse events
-    sliderHandle.addEventListener('mousedown', () => { isDragging = true; });
-    window.addEventListener('mouseup', () => { isDragging = false; });
+    sliderHandle.addEventListener('mousedown', () => { 
+      isDragging = true; 
+      sliderContainer.classList.add('dragging');
+    });
+    window.addEventListener('mouseup', () => { 
+      isDragging = false; 
+      sliderContainer.classList.remove('dragging');
+    });
     
     sliderContainer.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
@@ -244,8 +250,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Touch events for mobile
-    sliderHandle.addEventListener('touchstart', () => { isDragging = true; });
-    window.addEventListener('touchend', () => { isDragging = false; });
+    sliderHandle.addEventListener('touchstart', () => { 
+      isDragging = true; 
+      sliderContainer.classList.add('dragging');
+    });
+    window.addEventListener('touchend', () => { 
+      isDragging = false; 
+      sliderContainer.classList.remove('dragging');
+    });
     
     sliderContainer.addEventListener('touchmove', (e) => {
       if (!isDragging) return;
