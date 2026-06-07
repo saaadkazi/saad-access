@@ -465,12 +465,17 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.95; /* High video visibility (75-80% visible under overlay) */
+  opacity: 0; /* Starts hidden to allow smooth fade-in */
   filter: saturate(1.05) contrast(1.15) brightness(1.0);
   position: absolute;
   top: 0;
   left: 0;
   will-change: transform, opacity;
+  transition: opacity 1.2s ease; /* Smooth fade-in transition */
+}
+
+.hero-video.video-loaded {
+  opacity: 0.95; /* Target opacity when loaded */
 }
 
 .hero-overlay {

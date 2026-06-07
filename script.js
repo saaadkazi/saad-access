@@ -496,5 +496,23 @@ document.addEventListener('DOMContentLoaded', () => {
     updateParallax();
   }
 
+  /* ==========================================================================
+     HERO VIDEO FADE IN ON LOAD
+     ========================================================================== */
+  const heroVideo = document.querySelector('.hero-video');
+  if (heroVideo) {
+    const handleVideoLoad = () => {
+      heroVideo.classList.add('video-loaded');
+    };
+
+    // If the video is already playing or ready (cached/fast load)
+    if (heroVideo.readyState >= 3) {
+      handleVideoLoad();
+    } else {
+      // Listen to both canplay and playing to cover different browser implementations
+      heroVideo.addEventListener('canplay', handleVideoLoad);
+      heroVideo.addEventListener('playing', handleVideoLoad);
+    }
+  }
 
 });
