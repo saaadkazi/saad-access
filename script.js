@@ -515,4 +515,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  /* ==========================================================================
+     SIGNATURE INNOVATIONS STAT COUNTER ANIMATION
+     ========================================================================== */
+  const counterElements = document.querySelectorAll('.stat-counter');
+  
+  const animateCounter = (el) => {
+    const target = parseInt(el.getAttribute('data-target'));
+    const duration = 2000; // 2 seconds
+    const startTime = performance.now();
+    
+    const update = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out quad
+      const easeProgress = progress * (2 - progress);
+      const currentValue = Math.floor(easeProgress * target);
+      
+      if (target >= 1000) {
+        el.innerText = currentValue.toLocaleString('en-IN');
+      } else {
+        el.innerText = currentValue;
+      }
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        if (target >= 1000) {
+          el.innerText = target.toLocaleString('en-IN');
+        } else {
+          el.innerText = target;
+        }
+      }
+    };
+    requestAnimationFrame(update);
+  };
+
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        if (!el.classList.contains('animated')) {
+          el.classList.add('animated');
+          animateCounter(el);
+        }
+      }
+    });
+  }, { threshold: 0.1 });
+
+  counterElements.forEach(el => counterObserver.observe(el));
+
 });
+

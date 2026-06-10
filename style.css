@@ -1809,16 +1809,82 @@ body {
   color: var(--neon-blue);
 }
 
-/* Highlight Mods Grid */
-.highlight-mods-title {
+/* Highlight Mods Showcase Header styling */
+.signature-innovations-header {
   text-align: center;
-  font-family: var(--font-display);
-  font-size: 1.8rem;
-  text-transform: uppercase;
-  margin-bottom: 60px;
-  letter-spacing: 2px;
+  position: relative;
+  padding: 40px 0 20px;
+  margin-bottom: 80px;
+  overflow: hidden;
 }
 
+.watermark-bg {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: 14rem;
+  font-weight: 900;
+  color: var(--neon-blue);
+  opacity: 0.03;
+  filter: blur(3px);
+  pointer-events: none;
+  z-index: -1;
+  user-select: none;
+  letter-spacing: 8px;
+}
+
+.streak-underline {
+  position: relative;
+  width: 150px;
+  height: 2px;
+  background: rgba(77, 166, 255, 0.1);
+  margin: 25px auto 0;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.streak-light {
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 60px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+  box-shadow: 0 0 10px var(--neon-blue);
+  animation: streakLightAnim 3s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes streakLightAnim {
+  0% { left: -150%; }
+  100% { left: 150%; }
+}
+
+/* Scroll reveal slides styling */
+.reveal-slide-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-slide-left.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-slide-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-slide-right.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Highlight Mods Grid */
 .highlight-mods-container {
   display: flex;
   flex-direction: column;
@@ -1826,6 +1892,7 @@ body {
 }
 
 .highlight-row {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 80px;
@@ -1833,10 +1900,106 @@ body {
   padding: 50px;
   background: var(--bg-card);
   border: 1px solid var(--glass-border);
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, background-color 0.35s ease;
+}
+
+.highlight-row:hover {
+  transform: translateY(-8px);
+  border-color: rgba(77, 166, 255, 0.25); /* Subtle border glow */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 15px rgba(77, 166, 255, 0.1); /* Soft ambient shadow */
+  background-color: rgba(20, 20, 25, 0.95);
 }
 
 .highlight-row:nth-child(even) {
   flex-direction: row-reverse;
+}
+
+/* Traveling electric blue highlight border effect */
+.highlight-border-anim {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 4;
+}
+
+.highlight-row:hover .highlight-border-anim {
+  opacity: 1;
+}
+
+.highlight-border-anim::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent 45%, rgba(77, 166, 255, 0.3) 50%, transparent 55%);
+  top: -50%;
+  left: -50%;
+  animation: borderRotate 6s infinite linear; /* Slow, luxury animation */
+  border-radius: 50%;
+}
+
+.highlight-border-anim::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  background: var(--bg-card);
+  border-radius: calc(var(--border-radius-lg) - 1px);
+  z-index: 1;
+  transition: background-color 0.35s ease;
+}
+
+.highlight-row:hover .highlight-border-anim::after {
+  background: rgba(20, 20, 25, 0.95);
+}
+
+@keyframes borderRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* First in India Badge with 25% reduced glow */
+.first-india-badge {
+  position: absolute;
+  top: 25px;
+  left: 25px; /* Moved to top-left to avoid stats card overlap */
+  background: rgba(77, 166, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(77, 166, 255, 0.15);
+  padding: 6px 14px;
+  border-radius: 20px;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  box-shadow: 0 0 8px rgba(77, 166, 255, 0.08); /* reduced glow */
+  z-index: 10;
+  text-transform: uppercase;
+  transition: box-shadow 0.35s ease, border-color 0.35s ease, background-color 0.35s ease, color 0.35s ease;
+}
+
+.highlight-row:hover .first-india-badge {
+  box-shadow: 0 0 12px rgba(77, 166, 255, 0.25); /* reduced glow */
+  border-color: rgba(77, 166, 255, 0.4);
+  background-color: rgba(77, 166, 255, 0.10);
+  color: #FFFFFF;
+}
+
+/* Faint radial glow background */
+.highlight-image-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(77, 166, 255, 0.12) 0%, transparent 70%);
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .highlight-media {
@@ -1847,13 +2010,96 @@ body {
   box-shadow: 0 15px 40px rgba(0,0,0,0.5);
   position: relative;
   height: 400px;
+  background-color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
 }
 
 .highlight-media img {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+  filter: brightness(0.95);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
+}
+
+.highlight-row:hover .highlight-media img {
+  transform: scale(1.03); /* Subtle scale 1.03 */
+  filter: brightness(1.05);
+}
+
+/* Premium shine sweep reflections */
+.highlight-media::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  filter: brightness(0.85);
+  background: linear-gradient(
+    90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.0) 30%, 
+    rgba(255, 255, 255, 0.06) 50%, 
+    rgba(255, 255, 255, 0.0) 70%, 
+    transparent 100%
+  );
+  transform: skewX(-25deg) translate3d(-150%, 0, 0);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.highlight-row:hover .highlight-media::after {
+  transform: skewX(-25deg) translate3d(150%, 0, 0);
+}
+
+/* Small floating glass overlay panel at top-right */
+.highlight-image-overlay {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 220px;
+  background: rgba(10, 10, 12, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(77, 166, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+  padding: 14px 16px;
+  text-align: left;
+}
+
+.highlight-row:hover .highlight-image-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.overlay-stat-price {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--neon-blue);
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.overlay-stat-text {
+  font-family: var(--font-primary);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #FFFFFF;
+  opacity: 0.85;
 }
 
 .highlight-glow-overlay {
@@ -1864,24 +2110,60 @@ body {
   flex: 1;
 }
 
+/* Outlined numbers styling */
 .highlight-number {
   font-family: var(--font-display);
-  font-size: 2.5rem;
+  font-size: 5.5rem;
   font-weight: 900;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.02);
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.08);
-  margin-bottom: 15px;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(77, 166, 255, 0.4);
+  opacity: 0.08;
+  filter: drop-shadow(0 0 10px rgba(77, 166, 255, 0.6));
+  margin-bottom: -15px;
   display: block;
+  user-select: none;
+  transition: opacity 0.4s ease, filter 0.4s ease;
 }
 
+.highlight-row:hover .highlight-number {
+  opacity: 0.15;
+  filter: drop-shadow(0 0 15px rgba(77, 166, 255, 0.9));
+}
+
+/* Micro interactions title text underline & stats brighten */
 .highlight-title {
   font-family: var(--font-display);
   font-size: 1.6rem;
   text-transform: uppercase;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   font-weight: 800;
   letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.9);
+  transition: color 0.4s ease, text-shadow 0.4s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.highlight-row:hover .highlight-title {
+  color: #FFFFFF;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.highlight-title::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: var(--neon-blue);
+  box-shadow: 0 0 8px var(--neon-blue);
+  transition: width 0.4s ease;
+}
+
+.highlight-row:hover .highlight-title::after {
+  width: 100%;
 }
 
 .highlight-desc {
@@ -1917,6 +2199,11 @@ body {
   font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.4s ease;
+}
+
+.highlight-row:hover .spec-value {
   color: #FFFFFF;
 }
 
