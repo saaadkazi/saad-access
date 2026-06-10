@@ -1551,9 +1551,29 @@ body {
 /* Grid layout for Mods - Magazine layout */
 .mods-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 30px;
   margin-bottom: 120px;
+}
+
+@media (max-width: 1199px) {
+  .mods-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 991px) {
+  .mods-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 575px) {
+  .mods-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
 .mod-card {
@@ -1564,12 +1584,13 @@ body {
   transition: var(--transition-normal);
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .mod-card:hover {
-  transform: translateY(-5px);
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  transform: translateY(-4px);
+  border-color: rgba(77, 166, 255, 0.5);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(77, 166, 255, 0.25);
 }
 
 .mod-card-img-wrapper {
@@ -1591,6 +1612,137 @@ body {
 .mod-card:hover .mod-card-img {
   transform: scale(1.03);
   filter: brightness(1);
+}
+
+/* Containment & centering for all spec/product cards to prevent cropping */
+.mod-card[data-category="carbonfiber"] .mod-card-img-wrapper,
+.mod-card[data-category="headlights"] .mod-card-img-wrapper,
+.mod-card[data-category="paint"] .mod-card-img-wrapper,
+.mod-card[data-category="flipkey"] .mod-card-img-wrapper,
+.mod-card[data-category="3dmat"] .mod-card-img-wrapper,
+.mod-card[data-category="taillight"] .mod-card-img-wrapper,
+.mod-card[data-category="seatcover"] .mod-card-img-wrapper,
+.mod-card[data-category="standextender"] .mod-card-img-wrapper,
+.mod-card[data-category="sideindicators"] .mod-card-img-wrapper,
+.mod-card[data-category="accessories"] .mod-card-img-wrapper,
+.mod-card[data-category="tyres"] .mod-card-img-wrapper,
+.mod-card[data-category="lighting"] .mod-card-img-wrapper {
+  background-color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mod-card[data-category="carbonfiber"] .mod-card-img,
+.mod-card[data-category="headlights"] .mod-card-img,
+.mod-card[data-category="paint"] .mod-card-img,
+.mod-card[data-category="flipkey"] .mod-card-img,
+.mod-card[data-category="3dmat"] .mod-card-img,
+.mod-card[data-category="taillight"] .mod-card-img,
+.mod-card[data-category="seatcover"] .mod-card-img,
+.mod-card[data-category="standextender"] .mod-card-img,
+.mod-card[data-category="sideindicators"] .mod-card-img,
+.mod-card[data-category="accessories"] .mod-card-img,
+.mod-card[data-category="tyres"] .mod-card-img,
+.mod-card[data-category="lighting"] .mod-card-img {
+  object-fit: contain;
+  width: 90%;
+  height: 90%;
+  transition: var(--transition-slow);
+  filter: brightness(0.95);
+}
+
+.mod-card[data-category="carbonfiber"]:hover .mod-card-img,
+.mod-card[data-category="headlights"]:hover .mod-card-img,
+.mod-card[data-category="paint"]:hover .mod-card-img,
+.mod-card[data-category="flipkey"]:hover .mod-card-img,
+.mod-card[data-category="3dmat"]:hover .mod-card-img,
+.mod-card[data-category="taillight"]:hover .mod-card-img,
+.mod-card[data-category="seatcover"]:hover .mod-card-img,
+.mod-card[data-category="standextender"]:hover .mod-card-img,
+.mod-card[data-category="sideindicators"]:hover .mod-card-img,
+.mod-card[data-category="accessories"]:hover .mod-card-img,
+.mod-card[data-category="tyres"]:hover .mod-card-img,
+.mod-card[data-category="lighting"]:hover .mod-card-img {
+  transform: scale(1.03);
+  filter: brightness(1.05);
+}
+
+/* Specific styling overrides for refined spec/product cards */
+.mod-card[data-category="carbonfiber"] .mod-card-content,
+.mod-card[data-category="headlights"] .mod-card-content,
+.mod-card[data-category="paint"] .mod-card-content,
+.mod-card[data-category="flipkey"] .mod-card-content,
+.mod-card[data-category="3dmat"] .mod-card-content,
+.mod-card[data-category="taillight"] .mod-card-content,
+.mod-card[data-category="seatcover"] .mod-card-content,
+.mod-card[data-category="standextender"] .mod-card-content,
+.mod-card[data-category="sideindicators"] .mod-card-content,
+.mod-card[data-category="accessories"] .mod-card-content,
+.mod-card[data-category="tyres"] .mod-card-content,
+.mod-card[data-category="lighting"] .mod-card-content {
+  padding: 30px 25px 25px; /* Clean, compact padding */
+  text-align: left;
+}
+
+.mod-card[data-category="carbonfiber"] .mod-card-title,
+.mod-card[data-category="headlights"] .mod-card-title,
+.mod-card[data-category="paint"] .mod-card-title,
+.mod-card[data-category="flipkey"] .mod-card-title,
+.mod-card[data-category="3dmat"] .mod-card-title,
+.mod-card[data-category="taillight"] .mod-card-title,
+.mod-card[data-category="seatcover"] .mod-card-title,
+.mod-card[data-category="standextender"] .mod-card-title,
+.mod-card[data-category="sideindicators"] .mod-card-title,
+.mod-card[data-category="accessories"] .mod-card-title,
+.mod-card[data-category="tyres"] .mod-card-title,
+.mod-card[data-category="lighting"] .mod-card-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #FFFFFF;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.mod-card[data-category="carbonfiber"] .mod-card-price,
+.mod-card[data-category="headlights"] .mod-card-price,
+.mod-card[data-category="paint"] .mod-card-price,
+.mod-card[data-category="flipkey"] .mod-card-price,
+.mod-card[data-category="3dmat"] .mod-card-price,
+.mod-card[data-category="taillight"] .mod-card-price,
+.mod-card[data-category="seatcover"] .mod-card-price,
+.mod-card[data-category="standextender"] .mod-card-price,
+.mod-card[data-category="sideindicators"] .mod-card-price,
+.mod-card[data-category="accessories"] .mod-card-price,
+.mod-card[data-category="tyres"] .mod-card-price,
+.mod-card[data-category="lighting"] .mod-card-price {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--neon-blue);
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.mod-card[data-category="carbonfiber"] .mod-card-desc,
+.mod-card[data-category="headlights"] .mod-card-desc,
+.mod-card[data-category="paint"] .mod-card-desc,
+.mod-card[data-category="flipkey"] .mod-card-desc,
+.mod-card[data-category="3dmat"] .mod-card-desc,
+.mod-card[data-category="taillight"] .mod-card-desc,
+.mod-card[data-category="seatcover"] .mod-card-desc,
+.mod-card[data-category="standextender"] .mod-card-desc,
+.mod-card[data-category="sideindicators"] .mod-card-desc,
+.mod-card[data-category="accessories"] .mod-card-desc,
+.mod-card[data-category="tyres"] .mod-card-desc,
+.mod-card[data-category="lighting"] .mod-card-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 0;
+  font-weight: 300;
 }
 
 .mod-card-content {
