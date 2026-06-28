@@ -565,5 +565,422 @@ document.addEventListener('DOMContentLoaded', () => {
 
   counterElements.forEach(el => counterObserver.observe(el));
 
+  /* ==========================================================================
+     ADMIN PORTAL OVERLAY UI CONTROLLER
+     ========================================================================== */
+  const navProfileBtn = document.getElementById('nav-profile-btn');
+  const navProfileBtnMobile = document.getElementById('nav-profile-btn-mobile');
+  const loginModal = document.getElementById('landing-login-modal');
+  const loginClose = document.getElementById('landing-login-close');
+  
+  const tabBtnEmail = document.getElementById('tab-btn-email');
+  const tabBtnOauth = document.getElementById('tab-btn-oauth');
+  const emailForm = document.getElementById('email-login-form');
+  const oauthPanel = document.getElementById('oauth-login-panel');
+  const loginError = document.getElementById('landing-login-error');
+  
+  const adminOverlay = document.getElementById('admin-overlay');
+  const logoutBtn = document.getElementById('admin-logout-btn');
+  
+  const sidebarLinks = document.querySelectorAll('.sidebar-link');
+  const workspacePanels = document.querySelectorAll('.workspace-panel');
+  const workspaceTitle = document.getElementById('admin-workspace-title');
+
+  const openLoginModal = () => {
+    if (loginModal) {
+      loginModal.classList.add('active');
+      if (loginError) loginError.style.display = 'none';
+    }
+  };
+
+  const closeLoginModal = () => {
+    if (loginModal) {
+      loginModal.classList.remove('active');
+    }
+  };
+
+  const showAdminOverlay = () => {
+    if (adminOverlay) {
+      adminOverlay.classList.add('active');
+      document.body.classList.add('admin-mode-active');
+      if (navProfileBtn) navProfileBtn.classList.add('active-glow');
+      if (navProfileBtnMobile) navProfileBtnMobile.classList.add('active-glow');
+    }
+  };
+
+  const hideAdminOverlay = () => {
+    if (adminOverlay) {
+      adminOverlay.classList.remove('active');
+      document.body.classList.remove('admin-mode-active');
+      if (navProfileBtn) navProfileBtn.classList.remove('active-glow');
+      if (navProfileBtnMobile) navProfileBtnMobile.classList.remove('active-glow');
+    }
+  };
+
+  // Login Modal tab swapping
+  if (tabBtnEmail && tabBtnOauth && emailForm && oauthPanel) {
+    tabBtnEmail.addEventListener('click', () => {
+      tabBtnEmail.classList.add('active');
+      tabBtnOauth.classList.remove('active');
+      emailForm.style.display = 'flex';
+      oauthPanel.style.display = 'none';
+    });
+    
+    tabBtnOauth.addEventListener('click', () => {
+      tabBtnOauth.classList.add('active');
+      tabBtnEmail.classList.remove('active');
+      oauthPanel.style.display = 'flex';
+      emailForm.style.display = 'none';
+    });
+  }
+
+  // Email form login submission (Mock Validation)
+  if (emailForm) {
+    emailForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const emailInput = document.getElementById('login-email');
+      const passInput = document.getElementById('login-password');
+      const email = emailInput ? emailInput.value : '';
+      const pass = passInput ? passInput.value : '';
+      
+      // Admin verification logic
+      if (email.trim() === 'saadkazi0901@gmail.com' && pass.trim() !== '') {
+        closeLoginModal();
+        showAdminOverlay();
+        showToast('Terminal connection established successfully.', 'success');
+      } else {
+        if (loginError) {
+          loginError.style.display = 'flex';
+          const msg = document.getElementById('landing-login-error-msg');
+          if (msg) msg.innerText = "Unauthorized Access: Administrator email only.";
+        }
+      }
+    });
+  }
+
+  // Google OAuth continue button
+  const googleBtn = document.getElementById('btn-google-login');
+  if (googleBtn) {
+    googleBtn.addEventListener('click', () => {
+      closeLoginModal();
+      showAdminOverlay();
+      showToast('OAuth session verified successfully.', 'success');
+    });
+  }
+
+  // Toggle active sidebar panels
+  sidebarLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('data-target');
+      if (!targetId) return;
+      
+      sidebarLinks.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      
+      workspacePanels.forEach(panel => {
+        if (panel.id === targetId) {
+          panel.classList.add('active');
+        } else {
+          panel.classList.remove('active');
+        }
+      });
+      
+      if (workspaceTitle) {
+        const textElement = link.querySelector('span');
+        const text = textElement ? textElement.innerText : link.innerText;
+        workspaceTitle.innerText = `// TERMINAL CORE // ${text.toUpperCase()}`;
+      }
+    });
+  });
+
+  // Modal event triggers
+  const toHomeBtn = document.getElementById('admin-to-home-btn');
+  if (toHomeBtn) {
+    toHomeBtn.addEventListener('click', () => {
+      hideAdminOverlay();
+      if (window.location.pathname.includes('admin')) {
+        window.location.href = '/';
+      } else {
+        const homeSection = document.getElementById('home');
+        if (homeSection) {
+          homeSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+  }
+
+  if (navProfileBtn) navProfileBtn.addEventListener('click', openLoginModal);
+  if (navProfileBtnMobile) navProfileBtnMobile.addEventListener('click', openLoginModal);
+  if (loginClose) loginClose.addEventListener('click', closeLoginModal);
+  if (logoutBtn) logoutBtn.addEventListener('click', hideAdminOverlay);
+
+  window.addEventListener('click', (e) => {
+    if (e.target === loginModal) {
+      closeLoginModal();
+    }
+  });
+
+  // Quick Utilities click triggers
+  const backupBtn = document.getElementById('btn-quick-backup');
+  const syncBtn = document.getElementById('btn-quick-sync');
+  const clearTrashBtn = document.getElementById('btn-quick-clear-trash');
+  
+  if (backupBtn) {
+    backupBtn.addEventListener('click', () => {
+      showToast('Backup compiled and synchronized successfully.', 'success');
+      const backupList = document.getElementById('db-backup-list');
+      if (backupList) {
+        const row = document.createElement('div');
+        row.className = 'backup-row';
+        row.innerHTML = `
+          <div class="backup-info">
+            <span class="backup-name">Manual Backup #${Math.floor(Math.random() * 900 + 100)}</span>
+            <span class="backup-time">${new Date().toLocaleString()}</span>
+          </div>
+          <span class="badge-status green">Synchronized</span>
+        `;
+        backupList.insertBefore(row, backupList.firstChild);
+      }
+    });
+  }
+  
+  if (syncBtn) {
+    syncBtn.addEventListener('click', () => {
+      showToast('Live state synchronized successfully.', 'success');
+    });
+  }
+  
+  if (clearTrashBtn) {
+    clearTrashBtn.addEventListener('click', () => {
+      showToast('Trash bin purged.', 'success');
+    });
+  }
+  
+  // Header Action Triggers
+  const adminSaveDraft = document.getElementById('admin-save-draft-btn');
+  const adminPublish = document.getElementById('admin-publish-btn');
+  
+  if (adminSaveDraft) {
+    adminSaveDraft.addEventListener('click', () => {
+      showToast('Draft version saved.', 'success');
+    });
+  }
+  
+  if (adminPublish) {
+    adminPublish.addEventListener('click', () => {
+      showToast('Draft version published live.', 'success');
+      const draftBadge = document.getElementById('admin-draft-status');
+      if (draftBadge) {
+        draftBadge.className = 'badge-status green';
+        draftBadge.innerText = 'Live // Sync';
+      }
+    });
+  }
+
+  // Build Stats live previews
+  const formStatsVal = document.getElementById('form-stats-value');
+  const formStatsTime = document.getElementById('form-stats-time');
+  const formStatsParts = document.getElementById('form-stats-parts');
+  
+  const previewValDisplay = document.getElementById('preview-val-display');
+  const previewTimeDisplay = document.getElementById('preview-time-display');
+  const previewPartsDisplay = document.getElementById('preview-parts-display');
+  
+  if (formStatsVal && previewValDisplay) {
+    formStatsVal.addEventListener('input', (e) => {
+      previewValDisplay.innerText = e.target.value;
+    });
+  }
+  if (formStatsTime && previewTimeDisplay) {
+    formStatsTime.addEventListener('input', (e) => {
+      previewTimeDisplay.innerText = e.target.value.toUpperCase();
+    });
+  }
+  if (formStatsParts && previewPartsDisplay) {
+    formStatsParts.addEventListener('input', (e) => {
+      previewPartsDisplay.innerText = e.target.value;
+    });
+  }
+  
+  const statsForm = document.getElementById('stats-tab-form');
+  if (statsForm) {
+    statsForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      showToast('Build metrics saved to draft.', 'success');
+      const draftBadge = document.getElementById('admin-draft-status');
+      if (draftBadge) {
+        draftBadge.className = 'badge-status yellow';
+        draftBadge.innerText = 'Unsaved Draft';
+      }
+    });
+  }
+
+  // Footer configurations live previews
+  const formFooterIg = document.getElementById('form-footer-instagram');
+  const formFooterEmail = document.getElementById('form-footer-email');
+  const formFooterPhone = document.getElementById('form-footer-phone');
+  const formFooterCopyright = document.getElementById('form-footer-copyright');
+  
+  const previewFooterIg = document.getElementById('preview-footer-ig');
+  const previewFooterEmail = document.getElementById('preview-footer-email');
+  const previewFooterPhone = document.getElementById('preview-footer-phone');
+  const previewFooterCopyright = document.getElementById('preview-footer-copyright');
+  
+  if (formFooterIg && previewFooterIg) {
+    formFooterIg.addEventListener('input', (e) => {
+      const parts = e.target.value.split('/');
+      const handle = parts[parts.length - 1] || parts[parts.length - 2] || 'saad_kazi0001';
+      previewFooterIg.innerText = handle.startsWith('@') ? handle : '@' + handle;
+    });
+  }
+  if (formFooterEmail && previewFooterEmail) {
+    formFooterEmail.addEventListener('input', (e) => {
+      previewFooterEmail.innerText = e.target.value;
+    });
+  }
+  if (formFooterPhone && previewFooterPhone) {
+    formFooterPhone.addEventListener('input', (e) => {
+      previewFooterPhone.innerText = e.target.value;
+    });
+  }
+  if (formFooterCopyright && previewFooterCopyright) {
+    formFooterCopyright.addEventListener('input', (e) => {
+      previewFooterCopyright.innerText = e.target.value;
+    });
+  }
+  
+  const footerForm = document.getElementById('footer-tab-form');
+  if (footerForm) {
+    footerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      showToast('Footer settings saved to draft.', 'success');
+      const draftBadge = document.getElementById('admin-draft-status');
+      if (draftBadge) {
+        draftBadge.className = 'badge-status yellow';
+        draftBadge.innerText = 'Unsaved Draft';
+      }
+    });
+  }
+
+  // Vault cards category filtering
+  const filterPills = document.querySelectorAll('#vault-pills-container .filter-pill-btn');
+  const adminModCards = document.querySelectorAll('#vault-mods-grid .admin-mod-card');
+  
+  filterPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      filterPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      
+      const filter = pill.getAttribute('data-filter');
+      adminModCards.forEach(card => {
+        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Gallery Dropzone drag-drop mock triggers
+  const galleryDropzone = document.getElementById('gallery-dropzone');
+  if (galleryDropzone) {
+    galleryDropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      galleryDropzone.style.borderColor = 'var(--neon-blue)';
+      galleryDropzone.style.background = 'rgba(77, 166, 255, 0.05)';
+    });
+    
+    galleryDropzone.addEventListener('dragleave', () => {
+      galleryDropzone.style.borderColor = 'rgba(192, 192, 192, 0.2)';
+      galleryDropzone.style.background = 'rgba(17, 17, 17, 0.4)';
+    });
+    
+    galleryDropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      galleryDropzone.style.borderColor = 'rgba(192, 192, 192, 0.2)';
+      galleryDropzone.style.background = 'rgba(17, 17, 17, 0.4)';
+      showToast('Image uploaded and optimized to WebP.', 'success');
+      
+      const manageGrid = document.getElementById('gallery-manage-grid');
+      if (manageGrid) {
+        const item = document.createElement('div');
+        item.className = 'gallery-card-item';
+        item.innerHTML = `
+          <img src="modified.png">
+          <div class="gallery-card-overlay">
+            <button class="action-btn-sm">Edit</button>
+            <button class="action-btn-sm danger">Del</button>
+          </div>
+        `;
+        manageGrid.insertBefore(item, manageGrid.firstChild);
+      }
+    });
+    
+    galleryDropzone.addEventListener('click', () => {
+      showToast('Image optimized to WebP and added to grid.', 'success');
+      const manageGrid = document.getElementById('gallery-manage-grid');
+      if (manageGrid) {
+        const item = document.createElement('div');
+        item.className = 'gallery-card-item';
+        item.innerHTML = `
+          <img src="modified.png">
+          <div class="gallery-card-overlay">
+            <button class="action-btn-sm">Edit</button>
+            <button class="action-btn-sm danger">Del</button>
+          </div>
+        `;
+        manageGrid.insertBefore(item, manageGrid.firstChild);
+      }
+    });
+  }
+
+  // Helper for UI Toast notifications
+  const showToast = (message, type = 'success') => {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toast-container';
+      container.style.position = 'fixed';
+      container.style.bottom = '20px';
+      container.style.right = '20px';
+      container.style.zIndex = '99999';
+      container.style.display = 'flex';
+      container.style.flexDirection = 'column';
+      container.style.gap = '10px';
+      document.body.appendChild(container);
+    }
+    
+    const toast = document.createElement('div');
+    toast.style.background = 'rgba(17,17,17,0.95)';
+    toast.style.border = '1px solid ' + (type === 'success' ? '#4DA6FF' : '#FF5555');
+    toast.style.boxShadow = '0 5px 15px rgba(0,0,0,0.5), 0 0 10px ' + (type === 'success' ? 'rgba(77,166,255,0.2)' : 'rgba(255,85,85,0.2)');
+    toast.style.color = '#FFFFFF';
+    toast.style.padding = '12px 24px';
+    toast.style.fontSize = '0.72rem';
+    toast.style.fontFamily = 'var(--font-display)';
+    toast.style.fontWeight = '700';
+    toast.style.letterSpacing = '1px';
+    toast.style.textTransform = 'uppercase';
+    toast.style.borderRadius = '4px';
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(20px)';
+    toast.style.transition = 'all 0.3s ease';
+    toast.innerText = message;
+    
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+    }, 10);
+    
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(-20px)';
+      setTimeout(() => toast.remove(), 300);
+    }, 3500);
+  };
+
 });
 
