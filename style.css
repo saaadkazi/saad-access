@@ -3977,6 +3977,11 @@ body {
     gap: 25px;
     text-align: center;
   }
+
+  /* Disable heavy atmospheric smoke blurs on mobile for performance */
+  .smoke-container {
+    display: none !important;
+  }
 }
 
 /* ==========================================================================

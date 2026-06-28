@@ -465,7 +465,10 @@ document.addEventListener('DOMContentLoaded', () => {
      ========================================================================== */
   const heroSection = document.querySelector('.hero');
   const heroContent = document.querySelector('.hero-content');
-  if (heroSection && heroContent) {
+  // Detect mobile to disable parallax calculations and loop (saves mobile CPU/GPU rendering overhead)
+  const isMobileDevice = window.innerWidth <= 768 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  
+  if (heroSection && heroContent && !isMobileDevice) {
     let targetX = 0, targetY = 0;
     let currentX = 0, currentY = 0;
     const lerpFactor = 0.08;
