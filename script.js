@@ -985,5 +985,71 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3500);
   };
 
+  /* ==========================================================================
+     MAGNETIC HOVER EFFECTS
+     ========================================================================== */
+  const magneticElements = document.querySelectorAll('.btn-premium-cta, .footer-top-cta .btn-secondary, .social-glass-btn, .btn-back-to-top-premium');
+  
+  magneticElements.forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      
+      const isSocial = el.classList.contains('social-glass-btn');
+      const isBackToTop = el.classList.contains('btn-back-to-top-premium');
+      const multiplier = (isSocial || isBackToTop) ? 0.25 : 0.15;
+      
+      el.style.transform = `translate(${x * multiplier}px, ${y * multiplier}px) ${isSocial ? 'scale(1.05)' : 'scale(1.02)'}`;
+    });
+
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = '';
+    });
+  });
+
+  /* ==========================================================================
+     BACK TO TOP PROGRESS RING & SCROLL PROGRESS
+     ========================================================================== */
+  const footerBackToTop = document.querySelector('.btn-back-to-top-premium');
+  const progressCircle = document.querySelector('.progress-ring-circle');
+  
+  if (progressCircle) {
+    const radius = progressCircle.r.baseVal.value;
+    const circumference = radius * 2 * Math.PI;
+    
+    progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+    progressCircle.style.strokeDashoffset = circumference;
+    
+    const updateProgress = () => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollHeight > 0) {
+        const scrollPercent = (window.scrollY / scrollHeight) * 100;
+        const offset = circumference - (scrollPercent / 100) * circumference;
+        progressCircle.style.strokeDashoffset = offset;
+      }
+      
+      if (window.scrollY > 200) {
+        if (footerBackToTop) footerBackToTop.classList.add('visible');
+      } else {
+        if (footerBackToTop) footerBackToTop.classList.remove('visible');
+      }
+    };
+    
+    window.addEventListener('scroll', updateProgress);
+    updateProgress();
+  }
+  
+  if (footerBackToTop) {
+    footerBackToTop.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+
+
+
 });
 
