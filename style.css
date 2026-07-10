@@ -1504,9 +1504,59 @@ body {
    ========================================================================== */
 .mods-section {
   padding: 160px 0;
-  background-color: var(--bg-secondary);
+  background-color: #040404; /* Matte base dark color */
   position: relative;
   z-index: 20;
+  overflow: hidden;
+}
+
+/* 2x2 Twill Carbon Weave layer */
+.mods-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/carbon_weave.svg');
+  background-repeat: repeat;
+  background-size: 64px 64px;
+  opacity: 0.065; /* ~6.5% texture visibility - extremely subtle twill weave */
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Multilayered studio lighting and vignette overlays */
+.mods-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    /* Soft studio directional light from top-center to reveal weave naturally */
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.035) 0%, transparent 60%),
+    /* Soft radial blue glow centered behind the section title */
+    radial-gradient(circle at 50% 220px, rgba(77, 166, 255, 0.045) 0%, transparent 45%),
+    /* Gentle top-to-bottom dark gradient */
+    linear-gradient(to bottom, rgba(4, 4, 4, 0.7) 0%, rgba(8, 8, 8, 0.1) 50%, rgba(4, 4, 4, 0.8) 100%),
+    /* Black vignette around edges */
+    radial-gradient(circle at 50% 50%, transparent 55%, rgba(4, 4, 4, 0.95) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.mods-section .container {
+  position: relative;
+  z-index: 10; /* Float content above carbon overlays */
+}
+
+/* Clean, static blue accent underline on Modification Vault header */
+.mods-section .section-header .section-title::after {
+  background: var(--neon-blue);
+  box-shadow: none;
+  width: 60px;
 }
 
 /* Category Filters */
@@ -1579,8 +1629,11 @@ body {
 .mod-card {
   border-radius: var(--border-radius-md);
   overflow: hidden;
-  background: var(--bg-card);
-  border: 1px solid var(--glass-border);
+  background: rgba(21, 21, 21, 0.75); /* Premium glass background */
+  backdrop-filter: blur(12px); /* Glass blur effect */
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(77, 166, 255, 0.12); /* Thin premium blue border */
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55); /* Soft ambient shadow */
   transition: var(--transition-normal);
   display: flex;
   flex-direction: column;
@@ -1589,8 +1642,8 @@ body {
 
 .mod-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(77, 166, 255, 0.5);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(77, 166, 255, 0.25);
+  border-color: rgba(77, 166, 255, 0.45); /* Highlight premium blue border */
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.75); /* Deeper ambient separation shadow, no heavy glow */
 }
 
 .mod-card-img-wrapper {
