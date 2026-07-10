@@ -1814,81 +1814,143 @@ body {
   text-align: center;
   position: relative;
   padding: 40px 0 20px;
-  margin-bottom: 80px;
+  margin-bottom: 90px; /* lots of whitespace */
+  z-index: 2;
+}
+
+/* Elegant Typography reveal */
+.reveal-line-wrap {
+  display: block;
   overflow: hidden;
 }
 
-.watermark-bg {
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.reveal-line {
+  display: block;
+  transform: translateY(100%);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.signature-innovations-section.active .reveal-line {
+  transform: translateY(0);
+}
+
+/* Delays for title lines */
+.signature-innovations-section .reveal-line-wrap:nth-child(1) .reveal-line {
+  transition-delay: 0s;
+}
+.signature-innovations-section .reveal-line-wrap:nth-child(2) .reveal-line {
+  transition-delay: 0.15s;
+}
+
+/* Curated Luxury Showcase Header */
+.section-tag-luxury {
   font-family: var(--font-display);
-  font-size: 14rem;
-  font-weight: 900;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 5px;
   color: var(--neon-blue);
-  opacity: 0.03;
-  filter: blur(3px);
-  pointer-events: none;
-  z-index: -1;
-  user-select: none;
-  letter-spacing: 8px;
+  text-transform: uppercase;
+  display: inline-block;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  transition-delay: 0.3s;
 }
 
-.streak-underline {
-  position: relative;
-  width: 150px;
+.section-title-luxury {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  text-transform: capitalize;
+}
+
+.section-desc-luxury {
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--text-secondary);
+  max-width: 500px;
+  margin: 0 auto 25px;
+  line-height: 1.6;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  transition-delay: 0.5s;
+}
+
+.accent-underline-luxury {
+  width: 40px;
   height: 2px;
-  background: rgba(77, 166, 255, 0.1);
-  margin: 25px auto 0;
+  background: var(--neon-blue);
+  margin: 0 auto;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  transition-delay: 0.6s;
+}
+
+.signature-innovations-section.active .section-tag-luxury,
+.signature-innovations-section.active .section-desc-luxury,
+.signature-innovations-section.active .accent-underline-luxury {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   BUILD 7446 - SIGNATURE INNOVATIONS SECTION (LUXURY PRODUCT SHOWCASE)
+   ========================================================================== */
+.signature-innovations-section {
+  position: relative;
+  padding: 160px 0;
+  background-color: var(--bg-primary); /* Static dark background */
   overflow: hidden;
-  border-radius: 2px;
+  z-index: 20;
 }
 
-.streak-light {
+/* Static ambient blue radial light pulse (almost invisible, slow 25s loop) */
+.signature-innovations-section::before {
+  content: '';
   position: absolute;
-  top: 0;
-  left: -150%;
-  width: 60px;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
-  box-shadow: 0 0 10px var(--neon-blue);
-  animation: streakLightAnim 3s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  top: 50%;
+  left: 50%;
+  width: 200%;
+  height: 200%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(77, 166, 255, 0.02) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 1;
+  animation: slowAmbientPulse 25s infinite ease-in-out;
 }
 
-@keyframes streakLightAnim {
-  0% { left: -150%; }
-  100% { left: 150%; }
+@keyframes slowAmbientPulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
 }
 
-/* Scroll reveal slides styling */
-.reveal-slide-left {
+/* Entrance animation for the entire section: fade + translateY 40px over 1s (easeOutExpo) */
+.signature-innovations-section.reveal {
   opacity: 0;
-  transform: translateX(-40px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(40px);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.reveal-slide-left.active {
+.signature-innovations-section.reveal.active {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateY(0);
 }
 
-.reveal-slide-right {
-  opacity: 0;
-  transform: translateX(40px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.reveal-slide-right.active {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* Highlight Mods Grid */
+/* Card Container */
 .highlight-mods-container {
   display: flex;
   flex-direction: column;
   gap: 60px;
+  position: relative;
+  z-index: 2;
 }
 
 .highlight-row {
@@ -1898,123 +1960,124 @@ body {
   gap: 80px;
   border-radius: var(--border-radius-lg);
   padding: 50px;
-  background: var(--bg-card);
-  border: 1px solid var(--glass-border);
-  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, background-color 0.35s ease;
+  background: rgba(15, 15, 18, 0.6); /* Slightly more transparent glass */
+  border: 1px solid rgba(255, 255, 255, 0.05); /* Thin subtle border */
+  /* Sequential card entry transitions */
+  opacity: 0;
+  transform: translateY(40px);
+  filter: brightness(0.85); /* Default dim state for scroll experience */
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+              filter 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s ease, 
+              box-shadow 0.4s ease, 
+              background-color 0.4s ease;
 }
 
+/* Sequential card reveal delays when active */
+.signature-innovations-section.active .highlight-row:nth-child(1) {
+  opacity: 0.7; /* Inactive revealed card */
+  transform: translateY(0);
+  transition-delay: 0.2s, 0.2s, 0s, 0s, 0s, 0s;
+}
+
+.signature-innovations-section.active .highlight-row:nth-child(2) {
+  opacity: 0.7;
+  transform: translateY(0);
+  transition-delay: 0.5s, 0.5s, 0s, 0s, 0s, 0s;
+}
+
+.signature-innovations-section.active .highlight-row:nth-child(3) {
+  opacity: 0.7;
+  transform: translateY(0);
+  transition-delay: 0.8s, 0.8s, 0s, 0s, 0s, 0s;
+}
+
+/* Scroll Active styling (JS-driven) */
+.signature-innovations-section.active .highlight-row.active-card {
+  opacity: 1;
+  filter: brightness(1);
+}
+
+.signature-innovations-section.active .highlight-row.inactive-card {
+  opacity: 0.7;
+  filter: brightness(0.85);
+}
+
+/* Premium glass hover experience */
 .highlight-row:hover {
-  transform: translateY(-8px);
-  border-color: rgba(77, 166, 255, 0.25); /* Subtle border glow */
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 15px rgba(77, 166, 255, 0.1); /* Soft ambient shadow */
-  background-color: rgba(20, 20, 25, 0.95);
+  opacity: 1 !important;
+  filter: brightness(1) !important;
+  transform: translateY(-4px) !important; /* Premium touch translateY -4px */
+  border-color: rgba(77, 166, 255, 0.25); /* slightly brighter border */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(77, 166, 255, 0.08); /* slightly stronger shadow */
+  background-color: rgba(20, 20, 25, 0.85);
+  transition-delay: 0s !important; /* instantaneous response on hover */
 }
 
 .highlight-row:nth-child(even) {
   flex-direction: row-reverse;
 }
 
-/* Traveling electric blue highlight border effect */
-.highlight-border-anim {
-  position: absolute;
-  inset: 0;
-  border-radius: var(--border-radius-lg);
-  overflow: hidden;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.35s ease;
-  z-index: 4;
-}
-
-.highlight-row:hover .highlight-border-anim {
-  opacity: 1;
-}
-
-.highlight-border-anim::before {
-  content: '';
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  background: conic-gradient(from 0deg, transparent 45%, rgba(77, 166, 255, 0.3) 50%, transparent 55%);
-  top: -50%;
-  left: -50%;
-  animation: borderRotate 6s infinite linear; /* Slow, luxury animation */
-  border-radius: 50%;
-}
-
-.highlight-border-anim::after {
-  content: '';
-  position: absolute;
-  inset: 1px;
-  background: var(--bg-card);
-  border-radius: calc(var(--border-radius-lg) - 1px);
-  z-index: 1;
-  transition: background-color 0.35s ease;
-}
-
-.highlight-row:hover .highlight-border-anim::after {
-  background: rgba(20, 20, 25, 0.95);
-}
-
-@keyframes borderRotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* First in India Badge with 25% reduced glow */
+/* First in India Badge - Glass styling */
 .first-india-badge {
   position: absolute;
   top: 25px;
-  left: 25px; /* Moved to top-left to avoid stats card overlap */
+  left: 25px;
   background: rgba(77, 166, 255, 0.05);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(77, 166, 255, 0.15);
+  border: 1px solid rgba(77, 166, 255, 0.12);
   padding: 6px 14px;
   border-radius: 20px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.8);
   font-family: var(--font-display);
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 2px;
-  box-shadow: 0 0 8px rgba(77, 166, 255, 0.08); /* reduced glow */
   z-index: 10;
   text-transform: uppercase;
-  transition: box-shadow 0.35s ease, border-color 0.35s ease, background-color 0.35s ease, color 0.35s ease;
+  transition: border-color 0.4s ease, background-color 0.4s ease, color 0.4s ease;
 }
 
 .highlight-row:hover .first-india-badge {
-  box-shadow: 0 0 12px rgba(77, 166, 255, 0.25); /* reduced glow */
-  border-color: rgba(77, 166, 255, 0.4);
-  background-color: rgba(77, 166, 255, 0.10);
+  border-color: rgba(77, 166, 255, 0.35);
+  background-color: rgba(77, 166, 255, 0.08);
   color: #FFFFFF;
 }
 
-/* Faint radial glow background */
+/* Faint radial glow background (soft rim glow) */
 .highlight-image-glow {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(77, 166, 255, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(77, 166, 255, 0.06) 0%, transparent 70%);
   top: 0;
   left: 0;
   pointer-events: none;
   z-index: 1;
 }
 
+/* Display Glass Image Frame */
 .highlight-media {
   flex: 1.2;
   border-radius: var(--border-radius-md);
   overflow: hidden;
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+  border: 1px solid rgba(77, 166, 255, 0.15); /* Thin blue edge */
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.8), 0 10px 30px rgba(0, 0, 0, 0.5); /* Soft inner shadow */
   position: relative;
   height: 400px;
-  background-color: var(--bg-primary);
+  background-color: rgba(10, 10, 12, 0.85); /* Display glass look */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 5;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.highlight-row:hover .highlight-media {
+  border-color: rgba(77, 166, 255, 0.3);
+  box-shadow: inset 0 0 30px rgba(77, 166, 255, 0.08), 0 15px 40px rgba(0, 0, 0, 0.6);
 }
 
 .highlight-media img {
@@ -2022,16 +2085,18 @@ body {
   height: 90%;
   object-fit: contain;
   filter: brightness(0.95);
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Scroll parallax transform */
+  transform: translateY(var(--parallax-y, 0px)) scale(1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
   z-index: 2;
 }
 
 .highlight-row:hover .highlight-media img {
-  transform: scale(1.03); /* Subtle scale 1.03 */
-  filter: brightness(1.05);
+  transform: translateY(var(--parallax-y, 0px)) scale(1.01); /* Limit scale to 1.01 */
+  filter: brightness(1.0); /* image brightness +5% */
 }
 
-/* Premium shine sweep reflections */
+/* Subtle gloss reflection sweep (900ms duration, 15% opacity, skewed gradient) */
 .highlight-media::after {
   content: '';
   position: absolute;
@@ -2043,12 +2108,12 @@ body {
     90deg, 
     transparent 0%, 
     rgba(255, 255, 255, 0.0) 30%, 
-    rgba(255, 255, 255, 0.06) 50%, 
+    rgba(255, 255, 255, 0.15) 50%, 
     rgba(255, 255, 255, 0.0) 70%, 
     transparent 100%
   );
   transform: skewX(-25deg) translate3d(-150%, 0, 0);
-  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
   pointer-events: none;
   z-index: 4;
@@ -2058,31 +2123,38 @@ body {
   transform: skewX(-25deg) translate3d(150%, 0, 0);
 }
 
-/* Small floating glass overlay panel at top-right */
+/* Premium Price & Spec Badge (Heavy glass blur, slides up, soft reflection shadow) */
 .highlight-image-overlay {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  width: 220px;
-  background: rgba(10, 10, 12, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(77, 166, 255, 0.2);
-  border-radius: 12px;
+  bottom: 25px;
+  right: 25px;
+  width: 200px;
+  background: linear-gradient(135deg, rgba(15, 20, 30, 0.75) 0%, rgba(10, 12, 18, 0.85) 100%);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(77, 166, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.15); /* Top reflection edge */
+  border-radius: 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(20px); /* slide upward by 20px */
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s ease;
   z-index: 10;
-  padding: 14px 16px;
+  padding: 16px;
   text-align: left;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 
+              inset 0 1px 1px rgba(255, 255, 255, 0.1),
+              0 0 15px rgba(77, 166, 255, 0.05); /* Blue reflection shadow */
 }
 
 .highlight-row:hover .highlight-image-overlay {
   opacity: 1;
   transform: translateY(0);
+  border-color: rgba(77, 166, 255, 0.25);
 }
 
 .overlay-stat-price {
@@ -2102,36 +2174,31 @@ body {
   opacity: 0.85;
 }
 
-.highlight-glow-overlay {
-  display: none;
-}
-
 .highlight-info {
   flex: 1;
 }
 
-/* Outlined numbers styling */
+/* Outlined numbers styling (Leica/Nothing minimal style) */
 .highlight-number {
   font-family: var(--font-display);
   font-size: 5.5rem;
   font-weight: 900;
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 1.5px rgba(77, 166, 255, 0.4);
-  opacity: 0.08;
-  filter: drop-shadow(0 0 10px rgba(77, 166, 255, 0.6));
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15); /* clean thin stroke */
+  opacity: 0.15;
   margin-bottom: -15px;
   display: block;
   user-select: none;
-  transition: opacity 0.4s ease, filter 0.4s ease;
+  transition: -webkit-text-stroke 0.4s ease, opacity 0.4s ease;
 }
 
 .highlight-row:hover .highlight-number {
-  opacity: 0.15;
-  filter: drop-shadow(0 0 15px rgba(77, 166, 255, 0.9));
+  -webkit-text-stroke: 1px rgba(77, 166, 255, 0.4);
+  opacity: 0.25;
 }
 
-/* Micro interactions title text underline & stats brighten */
+/* Info Title & Desc */
 .highlight-title {
   font-family: var(--font-display);
   font-size: 1.6rem;
@@ -2140,30 +2207,13 @@ body {
   font-weight: 800;
   letter-spacing: 0.5px;
   color: rgba(255, 255, 255, 0.9);
-  transition: color 0.4s ease, text-shadow 0.4s ease;
+  transition: color 0.4s ease;
   position: relative;
   display: inline-block;
 }
 
 .highlight-row:hover .highlight-title {
   color: #FFFFFF;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-}
-
-.highlight-title::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  left: 0;
-  width: 40px;
-  height: 2px;
-  background: var(--neon-blue);
-  box-shadow: 0 0 8px var(--neon-blue);
-  transition: width 0.4s ease;
-}
-
-.highlight-row:hover .highlight-title::after {
-  width: 100%;
 }
 
 .highlight-desc {
@@ -4148,105 +4198,96 @@ body {
 }
 
 /* ==========================================================================
-   HOMEPAGE VAULT CTA REDESIGN
+   HOMEPAGE VAULT CTA REDESIGN - MINIMAL LUXURY DIVIDER
    ========================================================================== */
-.vault-cta-block {
+.vault-divider-transition {
   text-align: center;
-  margin-top: 60px;
-  padding: 50px 40px;
-  background: rgba(21, 21, 21, 0.4);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--border-radius-md);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  margin-top: 100px;
+  margin-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-  z-index: 1;
 }
 
-.vault-cta-block::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(77, 166, 255, 0.05) 0%, transparent 60%);
-  pointer-events: none;
+.divider-line {
+  width: 60px;
+  height: 1px;
+  background: rgba(77, 166, 255, 0.25);
+  margin-bottom: 20px;
 }
 
-.vault-cta-heading {
+.divider-label {
   font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-weight: 900;
-  color: #FFFFFF;
-  letter-spacing: 1px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--text-muted);
   text-transform: uppercase;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
-.vault-cta-desc {
+.divider-arrow {
   font-family: var(--font-primary);
   font-size: 0.95rem;
   font-weight: 300;
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0 auto 30px;
-  line-height: 1.6;
+  color: rgba(77, 166, 255, 0.5);
+  margin-bottom: 24px;
+  animation: gentleBounce 2s infinite ease-in-out;
 }
 
-/* Premium CTA Button styling */
-.btn-premium-cta {
+@keyframes gentleBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+/* Minimal Premium Button Style */
+.btn-minimal-luxury {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  background: rgba(11, 11, 11, 0.8);
-  color: #FFFFFF;
+  gap: 10px;
+  height: 46px;
+  padding: 0 28px;
+  border-radius: 14px;
+  background: rgba(10, 10, 12, 0.6);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(77, 166, 255, 0.15);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.9);
   font-family: var(--font-display);
-  font-weight: 700;
   font-size: 0.78rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 16px 36px;
-  border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(77, 166, 255, 0.3);
-  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 1.5px;
   text-decoration: none;
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 0 rgba(77, 166, 255, 0);
+  transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 350ms ease,
+              background-color 350ms ease,
+              box-shadow 350ms ease,
+              color 350ms ease;
+  width: fit-content;
   position: relative;
-  overflow: hidden;
+  z-index: 1;
 }
 
-.btn-premium-cta::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(77, 166, 255, 0.1), transparent);
-  transform: translateX(-100%);
-  transition: transform 0.6s ease;
+.luxury-arrow {
+  transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-premium-cta:hover {
-  transform: scale(1.03);
-  border-color: var(--neon-blue);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(77, 166, 255, 0.4);
+.btn-minimal-luxury:hover {
+  transform: translateY(-2px);
+  border-color: rgba(77, 166, 255, 0.35);
+  background-color: rgba(18, 22, 30, 0.7);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   color: #FFFFFF;
 }
 
-.btn-premium-cta:hover::after {
-  transform: translateX(100%);
-}
-
-.cta-arrow {
-  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.btn-premium-cta:hover .cta-arrow {
+.btn-minimal-luxury:hover .luxury-arrow {
   transform: translateX(6px);
 }
 

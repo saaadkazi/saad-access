@@ -569,6 +569,69 @@ document.addEventListener('DOMContentLoaded', () => {
   counterElements.forEach(el => counterObserver.observe(el));
 
   /* ==========================================================================
+     SIGNATURE INNOVATIONS LUXURY SHOWCASE CONTROLLER
+     ========================================================================== */
+  // 1. Scroll Active State Observer for Cards
+  const highlightRows = document.querySelectorAll('.highlight-row');
+  
+  if (highlightRows.length > 0) {
+    const cardObserverOptions = {
+      root: null,
+      rootMargin: '-30% 0px -30% 0px', // Trigger when card occupies the middle 40% of the screen
+      threshold: 0.1
+    };
+    
+    const cardObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          highlightRows.forEach(row => {
+            if (row === entry.target) {
+              row.classList.add('active-card');
+              row.classList.remove('inactive-card');
+            } else {
+              row.classList.remove('active-card');
+              row.classList.add('inactive-card');
+            }
+          });
+        }
+      });
+    }, cardObserverOptions);
+    
+    highlightRows.forEach(row => cardObserver.observe(row));
+  }
+
+  // 2. Subtle Parallax Effect for Showcase Images
+  const showcaseImages = document.querySelectorAll('.highlight-media img');
+  
+  if (showcaseImages.length > 0) {
+    const handleShowcaseParallax = () => {
+      const viewHeight = window.innerHeight;
+      const viewCenter = viewHeight / 2;
+      
+      showcaseImages.forEach(img => {
+        const rect = img.getBoundingClientRect();
+        // Check if image is within the viewport to save calculations
+        if (rect.bottom < 0 || rect.top > viewHeight) return;
+        
+        const imgCenter = rect.top + rect.height / 2;
+        const distanceFromCenter = imgCenter - viewCenter;
+        
+        // Map to a premium, subtle offset of max 8px
+        const maxParallax = 8;
+        const travel = (distanceFromCenter / viewHeight) * maxParallax;
+        const clampedTravel = Math.max(-maxParallax, Math.min(maxParallax, travel));
+        
+        img.style.setProperty('--parallax-y', `${clampedTravel}px`);
+      });
+    };
+    
+    window.addEventListener('scroll', handleShowcaseParallax, { passive: true });
+    window.addEventListener('resize', handleShowcaseParallax, { passive: true });
+    // Initial run
+    setTimeout(handleShowcaseParallax, 200);
+  }
+
+  /* ==========================================================================
      ADMIN PORTAL OVERLAY UI CONTROLLER
      ========================================================================== */
   const navProfileBtn = document.getElementById('nav-profile-btn');
