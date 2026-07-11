@@ -8,6 +8,7 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="admin-overlay.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
 
@@ -1013,63 +1014,89 @@
     <!-- ==============================
          ANIMATED FOOTER STRIP
          ============================== -->
-    <div class="footer-scooter-strip">
-      <div class="scooter-mover">
+    <div class="footer-scooter-strip" id="scooter-strip">
+      <!-- Confetti and Celebration Overlay -->
+      <div class="scooter-celebration-overlay" id="scooter-celebration-overlay"></div>
+      
+      <!-- Sleek background progress track -->
+      <div class="scooter-track"></div>
+      
+      <!-- Glowing active progress fill -->
+      <div class="scooter-track-fill" id="scooter-track-fill"></div>
+      
+      <!-- Scooter Mover -->
+      <div class="scooter-mover" id="scooter-mover">
+        <!-- Exhaust Particle Emitter Anchor -->
+        <div class="exhaust-emitter" id="exhaust-emitter"></div>
+
         <svg class="scooter-svg" viewBox="0 0 120 70" fill="none" xmlns="http://www.w3.org/2000/svg">
           <!-- Underglow light glow (placed behind) -->
-          <ellipse cx="60" cy="54" rx="35" ry="4" fill="rgba(77, 166, 255, 0.22)" filter="blur(4px)" class="underglow-light" />
+          <ellipse cx="63" cy="54" rx="35" ry="4" fill="rgba(62, 166, 255, 0.25)" filter="blur(4px)" class="underglow-light" />
 
           <!-- Headlight projector beam (facing right) -->
           <path d="M96 17 L122 8 L122 28 Z" fill="url(#beamGlow)" class="headlight-beam" />
 
-          <!-- Scooter silhouette container group -->
+          <!-- Scooter silhouette parent container group (rigid movement) -->
           <g class="scooter-silhouette-group">
-            <!-- Front telescopic forks & mudguard -->
-            <path d="M91 38 L95 50" stroke="#00d2ff" stroke-width="1.5" stroke-linecap="round" />
-            <path d="M88 38 C90 34, 96 34, 98 38 C98 40, 94 42, 90 42 Z" fill="#121212" stroke="#00d2ff" stroke-width="1.2" />
-
-            <!-- Floorboard & Step-through -->
-            <path d="M52 50 L84 50 L86 48 L80 38 L72 38 Z" fill="#121212" stroke="#00d2ff" stroke-width="1.2" />
-
-            <!-- Main Front Apron (Shield) -->
-            <path d="M84 24 C86 28, 92 36, 91 44 C90 48, 88 50, 84 50 L80 38 Z" fill="#121212" stroke="#00d2ff" stroke-width="1.2" />
-            <!-- Front indicator detailing -->
-            <path d="M88 30 L90 36 C89 38, 87 38, 87 36 Z" fill="rgba(0, 210, 255, 0.4)" stroke="#00d2ff" stroke-width="0.5" />
-
-            <!-- Handlebar Cowl & Hexagonal Headlamp -->
-            <path d="M78 16 L88 16 L94 20 L94 24 L84 24 L78 20 Z" fill="#121212" stroke="#00d2ff" stroke-width="1.2" />
-            <!-- Handlebar grips / levers -->
-            <path d="M76 17 L78 18 M90 17 L92 18" stroke="#00d2ff" stroke-width="1.5" stroke-linecap="round" />
-            <!-- Projector Headlight Lens (Glows blue) -->
-            <circle cx="91.5" cy="20" r="1.5" fill="var(--neon-blue)" filter="drop-shadow(0 0 2px var(--neon-blue))" />
-
-            <!-- Rear Side Panels -->
-            <path d="M52 50 C44 50, 32 46, 26 40 C20 34, 22 26, 32 26 C44 26, 52 32, 54 44 Z" fill="#121212" stroke="#00d2ff" stroke-width="1.2" />
             
-            <!-- Chrome Grab Rail at the back -->
-            <path d="M26 28 C22 26, 20 30, 24 32" stroke="#00d2ff" stroke-width="1.2" fill="none" stroke-linecap="round" />
+            <!-- Retro Suzuki Access mirrors (thin outlines) -->
+            <!-- Left mirror -->
+            <path d="M78 17 C76 13, 73 13, 73 11 C73 9, 76 9, 76 11 Z" stroke="#00d2ff" stroke-width="1.2" fill="none" />
+            <!-- Right mirror -->
+            <path d="M88 17 C90 13, 93 13, 93 11 C93 9, 90 9, 90 11 Z" stroke="#00d2ff" stroke-width="1.2" fill="none" />
 
-            <!-- Premium Seat -->
-            <path d="M42 26 C46 25, 68 25, 78 27 C78 28, 76 30, 72 30 C64 30, 48 30, 42 28 Z" fill="#080808" stroke="#00d2ff" stroke-width="1" />
+            <!-- Front forks suspension -->
+            <line x1="88" y1="36" x2="92" y2="50" stroke="#00d2ff" stroke-width="1.5" stroke-linecap="round" />
+            <!-- Front mudguard -->
+            <path d="M84 41 Q90 38 95 42" stroke="#00d2ff" stroke-width="1.5" fill="none" />
 
-            <!-- Rear License Plate / Tail Tidy -->
-            <path d="M22 40 L20 45" stroke="#00d2ff" stroke-width="1" />
+            <!-- Main Chassis Outline (Unified single-line vector style) -->
+            <!-- Access 125 proportions: retro rectangular handlebar cowl, flat step-through, long flat seat, curvy side body panels -->
+            <path d="M 78 22 
+                     L 81 36 
+                     C 83 40, 89 42, 87 47 
+                     L 81 48 
+                     L 52 48 
+                     C 44 48, 25 46, 23 39 
+                     C 21 32, 23 26, 33 26 
+                     L 78 26 Z" 
+                  stroke="#00d2ff" stroke-width="1.5" fill="none" stroke-linejoin="round" />
 
-            <!-- Rear exhaust muffler -->
-            <path d="M30 48 L46 44 L48 47 L32 50 Z" fill="#1c1c1c" stroke="#00d2ff" stroke-width="0.8" />
+            <!-- Retro rectangular Headlamp Cowl (Suzuki Access signature headlamp bezel) -->
+            <path d="M 78 17 L 88 17 L 94 20 L 94 23 L 84 23 L 78 20 Z" stroke="#00d2ff" stroke-width="1.5" fill="none" stroke-linejoin="round" />
+            <!-- Glowing blue headlight projector core -->
+            <circle cx="91" cy="20" r="1.5" fill="var(--neon-blue)" filter="drop-shadow(0 0 2px var(--neon-blue))" />
 
-            <!-- Front & Rear Wheels -->
-            <g class="wheel-group front-wheel-group">
-              <circle cx="92" cy="50" r="9" fill="#080808" stroke="#00d2ff" stroke-width="1.5" />
-              <circle cx="92" cy="50" r="5" fill="#121212" stroke="#00d2ff" stroke-width="1" />
-              <line x1="92" y1="41" x2="92" y2="59" stroke="#00d2ff" stroke-width="0.8" />
-              <line x1="83" y1="50" x2="101" y2="50" stroke="#00d2ff" stroke-width="0.8" />
+            <!-- Seat: Long and flat (Signature Access detail) -->
+            <path d="M 40 26 C 40 24, 45 24, 76 25" stroke="#00d2ff" stroke-width="1.5" fill="none" />
+
+            <!-- Rear Chrome Grab Rail outline -->
+            <path d="M 25 28 C 21 24, 21 28, 24 30" stroke="#00d2ff" stroke-width="1.2" fill="none" stroke-linecap="round" />
+
+            <!-- Exhaust muffler (parallel outline) -->
+            <path d="M 28 47 L 44 43 L 46 46 L 30 50 Z" stroke="#00d2ff" stroke-width="1.2" fill="none" stroke-linejoin="round" />
+
+            <!-- Wheels (Completely anchored to body outline) -->
+            <!-- Front Wheel at hub (92, 50) -->
+            <g class="wheel-group front-wheel-group" id="scooter-front-wheel">
+              <circle cx="92" cy="50" r="9" stroke="#00d2ff" stroke-width="1.5" fill="none" />
+              <circle cx="92" cy="50" r="3.5" stroke="#00d2ff" stroke-width="1.2" fill="none" />
+              <!-- Rotating spokes inside a separate group -->
+              <g class="wheel-spokes" id="scooter-front-spokes" style="transform-origin: 92px 50px;">
+                <line x1="92" y1="41" x2="92" y2="59" stroke="#00d2ff" stroke-width="1" />
+                <line x1="83" y1="50" x2="101" y2="50" stroke="#00d2ff" stroke-width="1" />
+              </g>
             </g>
-            <g class="wheel-group rear-wheel-group">
-              <circle cx="38" cy="50" r="9" fill="#080808" stroke="#00d2ff" stroke-width="1.5" />
-              <circle cx="38" cy="50" r="5" fill="#121212" stroke="#00d2ff" stroke-width="1" />
-              <line x1="38" y1="41" x2="38" y2="59" stroke="#00d2ff" stroke-width="0.8" />
-              <line x1="29" y1="50" x2="47" y2="50" stroke="#00d2ff" stroke-width="0.8" />
+
+            <!-- Rear Wheel at hub (38, 50) -->
+            <g class="wheel-group rear-wheel-group" id="scooter-rear-wheel">
+              <circle cx="38" cy="50" r="9" stroke="#00d2ff" stroke-width="1.5" fill="none" />
+              <circle cx="38" cy="50" r="3.5" stroke="#00d2ff" stroke-width="1.2" fill="none" />
+              <!-- Rotating spokes inside a separate group -->
+              <g class="wheel-spokes" id="scooter-rear-spokes" style="transform-origin: 38px 50px;">
+                <line x1="38" y1="41" x2="38" y2="59" stroke="#00d2ff" stroke-width="1" />
+                <line x1="29" y1="50" x2="47" y2="50" stroke="#00d2ff" stroke-width="1" />
+              </g>
             </g>
           </g>
 
@@ -1080,6 +1107,28 @@
             </linearGradient>
           </defs>
         </svg>
+      </div>
+
+      <!-- Ride Complete Badge (glassmorphism badge) -->
+      <div class="ride-complete-badge" id="ride-complete-badge">
+        <div class="badge-glass">
+          <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="badge-text">RIDE COMPLETE</span>
+        </div>
+      </div>
+
+      <!-- Controls Section on the right -->
+      <div class="scooter-controls">
+        <button class="scooter-accelerator-btn" id="scooter-accel-btn" aria-label="Hold to Accelerate">
+          <span class="btn-glow-ring"></span>
+          <span class="btn-fill"></span>
+          <span class="btn-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </span>
+          <span class="btn-label">THROTTLE</span>
+        </button>
       </div>
     </div>
 

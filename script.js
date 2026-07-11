@@ -1112,7 +1112,253 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  /* ==========================================================================
+     INTERACTIVE SUZUKI ACCESS PROGRESS STRIP
+     ========================================================================== */
+  const scooterStrip = document.getElementById('scooter-strip');
+  if (scooterStrip) {
+    const scooterMover = document.getElementById('scooter-mover');
+    const trackFill = document.getElementById('scooter-track-fill');
+    const accelBtn = document.getElementById('scooter-accel-btn');
+    const frontWheelSpokes = document.getElementById('scooter-front-spokes');
+    const rearWheelSpokes = document.getElementById('scooter-rear-spokes');
+    const emitter = document.getElementById('exhaust-emitter');
+    const badge = document.getElementById('ride-complete-badge');
+    const overlay = document.getElementById('scooter-celebration-overlay');
+    const btnFill = accelBtn.querySelector('.btn-fill');
 
+    let isAccelerating = false;
+    let progressPercent = 0;
+    let velocity = 0;
+    let wheelRotation = 0;
+    let smokeCounter = 0;
+    let celebrated = false;
+
+    // Movement tuning constants
+    const acceleration = 0.035;
+    const friction = 0.055;
+    const maxVelocity = 1.1; // % per frame
+
+    // Event listeners for Accelerator Button
+    const startAcceleration = (e) => {
+      e.preventDefault();
+      if (celebrated) return;
+      isAccelerating = true;
+      accelBtn.classList.add('active');
+    };
+
+    const stopAcceleration = () => {
+      isAccelerating = false;
+      accelBtn.classList.remove('active');
+    };
+
+    accelBtn.addEventListener('mousedown', startAcceleration);
+    accelBtn.addEventListener('touchstart', startAcceleration, { passive: false });
+    
+    window.addEventListener('mouseup', stopAcceleration);
+    window.addEventListener('touchend', stopAcceleration);
+    accelBtn.addEventListener('mouseleave', stopAcceleration);
+
+    // Audio cue generator (built-in chiptune chord using Web Audio)
+    const playSuccessChime = () => {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        
+        const tone = (freq, start, duration) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, start);
+          
+          gain.gain.setValueAtTime(0.001, start);
+          gain.gain.exponentialRampToValueAtTime(0.12, start + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+          
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.start(start);
+          osc.stop(start + duration);
+        };
+        
+        const now = ctx.currentTime;
+        tone(523.25, now, 0.4);       // C5
+        tone(659.25, now + 0.08, 0.4);  // E5
+        tone(783.99, now + 0.16, 0.6);  // G5
+      } catch (err) {
+        console.warn("Chime block", err);
+      }
+    };
+
+    // Confetti particles burst generator
+    const spawnConfetti = () => {
+      const colors = ['#3EA6FF', '#ffffff', '#00d2ff', '#1E2D3D'];
+      const parentRect = scooterStrip.getBoundingClientRect();
+      const scooterRect = scooterMover.getBoundingClientRect();
+      
+      // Target position is front wheel/cowl area
+      const originX = scooterRect.left - parentRect.left + 80;
+      const originY = scooterRect.top - parentRect.top + 20;
+
+      for (let i = 0; i < 45; i++) {
+        const p = document.createElement('div');
+        p.className = 'confetti-particle';
+        
+        // Random style setup
+        const bg = colors[Math.floor(Math.random() * colors.length)];
+        p.style.backgroundColor = bg;
+        p.style.left = originX + 'px';
+        p.style.top = originY + 'px';
+        
+        scooterStrip.appendChild(p);
+
+        // Explode particles using GSAP
+        gsap.to(p, {
+          x: gsap.utils.random(-120, 120),
+          y: gsap.utils.random(-65, 0),
+          rotation: gsap.utils.random(0, 360),
+          opacity: 0,
+          scale: gsap.utils.random(0.3, 1),
+          duration: gsap.utils.random(1.2, 1.8),
+          ease: "power2.out",
+          onComplete: () => p.remove()
+        });
+      }
+    };
+
+    // Exhaust Smoke particle generator
+    const createExhaustSmoke = () => {
+      const parentRect = scooterStrip.getBoundingClientRect();
+      const emitterRect = emitter.getBoundingClientRect();
+      
+      const p = document.createElement('div');
+      p.className = 'exhaust-particle';
+      p.style.left = (emitterRect.left - parentRect.left) + 'px';
+      p.style.top = (emitterRect.top - parentRect.top) + 'px';
+      
+      scooterStrip.appendChild(p);
+
+      // Trailing smoke fade
+      gsap.to(p, {
+        x: "-=" + gsap.utils.random(20, 40),
+        y: "-=" + gsap.utils.random(2, 8),
+        opacity: 0,
+        scale: gsap.utils.random(1.5, 2.5),
+        duration: 0.8,
+        ease: "power1.out",
+        onComplete: () => p.remove()
+      });
+    };
+
+    // Trigger celebration when the scooter reaches the end
+    const triggerCelebration = () => {
+      celebrated = true;
+      isAccelerating = false;
+      accelBtn.classList.remove('active');
+      
+      playSuccessChime();
+      spawnConfetti();
+      
+      overlay.classList.add('celebrate');
+      badge.classList.add('active');
+
+      // Auto Reset after 2.5 seconds
+      setTimeout(() => {
+        gsap.to(badge, {
+          opacity: 0,
+          scale: 0.9,
+          duration: 0.3,
+          onComplete: () => {
+            badge.classList.remove('active');
+            gsap.set(badge, { clearProps: "opacity,scale" });
+          }
+        });
+        
+        overlay.classList.remove('celebrate');
+
+        // Animate scooter sliding back to start
+        const stateObj = { p: progressPercent };
+        gsap.to(stateObj, {
+          p: 0,
+          duration: 1.5,
+          ease: "power2.inOut",
+          onUpdate: () => {
+            progressPercent = stateObj.p;
+            // Spin wheels backward
+            wheelRotation -= 8;
+            updateMoverPosition();
+          },
+          onComplete: () => {
+            celebrated = false;
+          }
+        });
+      }, 2500);
+    };
+
+    // Update position and visual variables
+    const updateMoverPosition = () => {
+      const trackWidth = scooterStrip.offsetWidth - 200; // Calculate travel track width
+      const travelDistance = Math.max(100, trackWidth);
+      const currentX = (progressPercent / 100) * travelDistance;
+      
+      // Engine vibration offset Y (jitter effect)
+      const vibrationY = (isAccelerating && velocity > 0) ? (Math.random() - 0.5) * 0.7 : 0;
+      
+      // Position scooter
+      gsap.set(scooterMover, { x: currentX, y: vibrationY });
+      
+      // Position active glowing track line
+      gsap.set(trackFill, { width: (currentX + 40) + "px" });
+      
+      // Rotate wheel elements (only the spokes rotate, hubs/tires remain locked to body)
+      gsap.set([frontWheelSpokes, rearWheelSpokes], { rotation: wheelRotation, transformOrigin: "center center" });
+      
+      // Throttle Button fill progress mapping
+      gsap.set(btnFill, { width: progressPercent + "%" });
+    };
+
+    // GSAP Ticker animation loop running at 60 FPS
+    gsap.ticker.add(() => {
+      if (celebrated) return;
+
+      if (isAccelerating) {
+        velocity += acceleration;
+        if (velocity > maxVelocity) velocity = maxVelocity;
+      } else {
+        velocity -= friction;
+        if (velocity < 0) velocity = 0;
+      }
+
+      if (velocity > 0) {
+        progressPercent += velocity;
+        
+        // Spin wheels forward relative to velocity
+        wheelRotation += velocity * 12;
+        
+        // Emit smoke particles based on speed
+        smokeCounter++;
+        if (smokeCounter % 7 === 0) {
+          createExhaustSmoke();
+        }
+
+        if (progressPercent >= 100) {
+          progressPercent = 100;
+          updateMoverPosition();
+          triggerCelebration();
+          return;
+        }
+      }
+
+      updateMoverPosition();
+    });
+
+    // Handle viewport resize dynamically
+    window.addEventListener('resize', updateMoverPosition);
+    updateMoverPosition();
+  }
 
 });
 
